@@ -1,0 +1,20 @@
+language: java
+
+os: linux
+jdk: openjdk8
+dist: trusty
+
+before_deploy:
+  - ./gradlew clean
+  - ./gradlew jar
+
+deploy:
+  provider: releases
+  api_key: $GITHUB_TOKEN_EPTCP
+  file_glob: true
+  file: "build/libs/*"
+  skip_cleanup: true
+  name: Easy Packet TCP
+  on:
+    all_branches: true
+    tags: true
