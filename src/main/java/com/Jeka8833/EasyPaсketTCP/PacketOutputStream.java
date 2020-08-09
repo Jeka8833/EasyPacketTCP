@@ -1,9 +1,14 @@
-package com.Jeka8833.EasyPaketTCP;
+package com.Jeka8833.EasyPaсketTCP;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.util.List;
 
 public class PacketOutputStream extends DataOutputStream {
+
+    private static final Logger log = LogManager.getLogger(PacketOutputStream.class);
 
     public PacketOutputStream(final OutputStream out) {
         super(out);
@@ -65,6 +70,34 @@ public class PacketOutputStream extends DataOutputStream {
             objectOutputStream.writeObject(object);
             objectOutputStream.flush();
             writeByteArray(outputStream.toByteArray());
+        }
+    }
+
+    public void sendObject(Serializable object) {
+        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+             PacketOutputStream temp = new PacketOutputStream(byteArrayOutputStream)) {
+
+            temp.writeShort(0);
+            temp.writeObject(object);
+            temp.write(PacketSettings.stopBytes);
+
+            write(byteArrayOutputStream.toByteArray());
+        } catch (IOException ex) {
+            log.warn("Fail send Object", ex);
+        }
+    }
+
+    public void sendPacket(Packet packet) {
+        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+             PacketOutputStream temp = new PacketOutputStream(byteArrayOutputStream)) {
+
+            temp.writeShort(PacketSettings.packets.getKey(packet.getClass()));
+            packet.write(temp);
+            temp.write(PacketSettings.stopBytes);
+
+            write(byteArrayOutputStream.toByteArray());
+        } catch (IOException ex) {
+            log.warn("Fail send Packet", ex);
         }
     }
 }

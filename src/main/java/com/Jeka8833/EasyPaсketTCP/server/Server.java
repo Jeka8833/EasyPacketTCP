@@ -1,4 +1,4 @@
-package com.Jeka8833.EasyPaketTCP.server;
+package com.Jeka8833.EasyPaсketTCP.server;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

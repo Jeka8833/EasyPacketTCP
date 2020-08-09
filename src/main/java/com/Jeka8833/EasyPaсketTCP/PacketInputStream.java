@@ -1,7 +1,8 @@
-package com.Jeka8833.EasyPaketTCP;
+package com.Jeka8833.EasyPaсketTCP;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class PacketInputStream extends DataInputStream {
@@ -92,5 +93,18 @@ public class PacketInputStream extends DataInputStream {
         try (final ObjectInputStream inputStream = new ObjectInputStream(new ByteArrayInputStream(readByteArray()))) {
             return inputStream.readObject();
         }
+    }
+
+    public void searchEnd() throws IOException {
+        if (PacketSettings.stopBytes.length == 0) throw new NullPointerException();
+        if (PacketSettings.stopBytes.length == 1)
+            while (readByte() != PacketSettings.stopBytes[0]) {
+            }
+
+        final byte[] tempBytes = new byte[PacketSettings.stopBytes.length];
+        do {
+            System.arraycopy(tempBytes, 1, tempBytes, 0, tempBytes.length - 1);
+            tempBytes[PacketSettings.stopBytes.length - 1] = readByte();
+        } while (!Arrays.equals(PacketSettings.stopBytes, tempBytes));
     }
 }

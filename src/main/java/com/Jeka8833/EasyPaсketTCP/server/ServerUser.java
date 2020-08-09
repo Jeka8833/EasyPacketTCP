@@ -1,15 +1,14 @@
-package com.Jeka8833.EasyPaketTCP.server;
+package com.Jeka8833.EasyPaсketTCP.server;
 
-import com.Jeka8833.EasyPaketTCP.Packet;
-import com.Jeka8833.EasyPaketTCP.PacketInputStream;
-import com.Jeka8833.EasyPaketTCP.PacketOutputStream;
-import com.Jeka8833.EasyPaketTCP.User;
+import com.Jeka8833.EasyPaсketTCP.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ServerUser extends Thread implements User {
 
@@ -19,6 +18,9 @@ public class ServerUser extends Thread implements User {
     private final Socket socket;
     private final PacketInputStream inputStream;
     private final PacketOutputStream outputStream;
+
+    public final List<ReceiveObjectListener> objectListeners = new ArrayList<>();
+    public final List<ReceivePacketListener> packetListeners = new ArrayList<>();
 
     public ServerUser(Server server, final Socket socket) throws IOException {
         this.server = server;
@@ -30,7 +32,27 @@ public class ServerUser extends Thread implements User {
     @Override
     public void run() {
         try {
-
+            while (true) {
+                final short signature = inputStream.readShort();
+                try {
+                    if (signature == 0) {
+                        final Serializable object = (Serializable) inputStream.readObject();
+                        for (ReceiveObjectListener listener : objectListeners)
+                            listener.receiveObject(object);
+                    } else if (PacketSettings.packets.containsKey(signature)) {
+                        final Packet packet = PacketSettings.packets.get(signature).newInstance();
+                        packet.read(inputStream);
+                        for (ReceivePacketListener listener : packetListeners)
+                            listener.receivePacket(packet);
+                        packet.processByServer(this);
+                    }
+                } catch (IllegalAccessException | InstantiationException | IOException ex) {
+                    log.debug("Fail read packet", ex);
+                    inputStream.searchEnd();
+                }
+            }
+        } catch (Exception e) {
+            log.debug("Client crash", e);
         } finally {
             close();
         }
@@ -63,39 +85,17 @@ public class ServerUser extends Thread implements User {
         return outputStream;
     }
 
-    /**
-     * Sending client any class
-     *
-     * @param object The class to send
-     * @throws NullPointerException If the object is null
-     */
     @Override
     public void sendObject(Serializable object) {
         if (socket.isClosed()) return;
         if (object == null) throw new NullPointerException("Sending can not be Null");
-        try {
-            outputStream.writeShort(0);
-            outputStream.writeObject(object);
-        } catch (IOException ex) {
-            log.warn("Fail send Object", ex);
-        }
+        outputStream.sendObject(object);
     }
 
-    /**
-     * Sending client any packet
-     *
-     * @param packet The packet to send
-     * @throws NullPointerException If packet is null
-     */
     @Override
     public void sendPacket(Packet packet) {
         if (socket.isClosed()) return;
         if (packet == null) throw new NullPointerException("Sending can not be Null");
-        try {
-            outputStream.writeShort(Packet.packetMap.getKey(packet.getClass()));
-            packet.write(outputStream);
-        } catch (IOException ex) {
-            log.warn("Fail send Packet", ex);
-        }
+        outputStream.sendPacket(packet);
     }
 }
