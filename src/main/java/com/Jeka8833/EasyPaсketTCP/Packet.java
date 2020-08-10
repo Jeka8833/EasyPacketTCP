@@ -3,10 +3,12 @@ package com.Jeka8833.EasyPaсketTCP;
 import com.Jeka8833.EasyPaсketTCP.client.Client;
 import com.Jeka8833.EasyPaсketTCP.server.ServerUser;
 
-public interface Packet {
-    void write(final PacketOutputStream outputStream);
+import java.io.IOException;
 
-    void read(final PacketInputStream inputStream);
+public interface Packet {
+    void write(final PacketOutputStream outputStream) throws IOException;
+
+    void read(final PacketInputStream inputStream) throws IOException;
 
     void processByServer(final ServerUser sender);
 

@@ -1,6 +1,8 @@
 package com.Jeka8833.EasyPaсketTCP.client;
 
 import com.Jeka8833.EasyPaсketTCP.*;
+import com.Jeka8833.EasyPaсketTCP.listener.ReceiveObjectListener;
+import com.Jeka8833.EasyPaсketTCP.listener.ReceivePacketListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
