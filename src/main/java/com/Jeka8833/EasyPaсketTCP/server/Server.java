@@ -1,5 +1,6 @@
 package com.Jeka8833.EasyPaсketTCP.server;
 
+import com.Jeka8833.EasyPaсketTCP.listener.UserJoinListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,6 +15,7 @@ public class Server extends Thread {
     private static final Logger log = LogManager.getLogger(Server.class);
 
     public final List<ServerUser> users = new ArrayList<>();
+    public final List<UserJoinListener> joinListeners = new ArrayList<>();
 
     public final ServerSocket serverSocket;
 
@@ -32,12 +34,14 @@ public class Server extends Thread {
     @Override
     public void run() {
         try {
-            while (serverSocket.isClosed()) {
+            while (true) {
                 try {
                     final ServerUser user = new ServerUser(this, serverSocket.accept());
                     users.add(user);
                     user.start();
-                } catch (IOException ignored) {
+                    for (UserJoinListener listener : joinListeners)
+                        listener.userJoin(user);
+                } catch (Exception ignored) {
                 }
             }
         } finally {
@@ -47,12 +51,12 @@ public class Server extends Thread {
 
     public void close() {
         try {
-            for(ServerUser user : users){
+            for (ServerUser user : users) {
                 try {
                     user.getSocket().close();
                     user.getInputStream().close();
                     user.getOutputStream().close();
-                } catch (IOException ignored){
+                } catch (IOException ignored) {
                 }
             }
             users.clear();

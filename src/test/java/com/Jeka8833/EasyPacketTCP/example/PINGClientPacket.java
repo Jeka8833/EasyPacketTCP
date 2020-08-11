@@ -13,6 +13,7 @@ public class PINGClientPacket implements Packet {
     private long time;
 
     public PINGClientPacket() {
+        this(System.currentTimeMillis());
     }
 
     public PINGClientPacket(final long time) {

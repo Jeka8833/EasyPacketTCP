@@ -50,6 +50,7 @@ public class Client extends Thread implements User {
                             listener.receivePacket(packet);
                         packet.processByClient(this);
                     }
+                    inputStream.skipBytes(PacketSettings.stopBytes.length);
                 } catch (IllegalAccessException | InstantiationException | IOException ex) {
                     log.debug("Fail read packet", ex);
                     inputStream.searchEnd();

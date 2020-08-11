@@ -48,6 +48,7 @@ public class ServerUser extends Thread implements User {
                             listener.receivePacket(packet);
                         packet.processByServer(this);
                     }
+                    inputStream.skipBytes(PacketSettings.stopBytes.length);
                 } catch (IllegalAccessException | InstantiationException | IOException ex) {
                     log.debug("Fail read packet", ex);
                     inputStream.searchEnd();

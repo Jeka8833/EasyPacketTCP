@@ -13,6 +13,7 @@ public class PINGServerPacket implements Packet {
     private long time;
 
     public PINGServerPacket() {
+        this(System.currentTimeMillis());
     }
 
     public PINGServerPacket(final long time) {
