@@ -1,6 +1,7 @@
-package com.Jeka8833.EasyPaсketTCP.server;
+package com.Jeka8833.EasyPacketTCP.server;
 
-import com.Jeka8833.EasyPaсketTCP.listener.UserJoinListener;
+import com.Jeka8833.EasyPacketTCP.listener.ServerUserDisconnectListener;
+import com.Jeka8833.EasyPacketTCP.listener.ServerUserJoinListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,7 +16,8 @@ public class Server extends Thread {
     private static final Logger log = LogManager.getLogger(Server.class);
 
     public final List<ServerUser> users = new ArrayList<>();
-    public final List<UserJoinListener> joinListeners = new ArrayList<>();
+    public final List<ServerUserJoinListener> joinListeners = new ArrayList<>();
+    public final List<ServerUserDisconnectListener> disconnectListeners = new ArrayList<>();
 
     public final ServerSocket serverSocket;
 
@@ -39,7 +41,7 @@ public class Server extends Thread {
                     final ServerUser user = new ServerUser(this, serverSocket.accept());
                     users.add(user);
                     user.start();
-                    for (UserJoinListener listener : joinListeners)
+                    for (ServerUserJoinListener listener : joinListeners)
                         listener.userJoin(user);
                 } catch (Exception ignored) {
                 }

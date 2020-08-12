@@ -1,10 +1,10 @@
 package com.Jeka8833.EasyPacketTCP.example;
 
-import com.Jeka8833.EasyPaсketTCP.Packet;
-import com.Jeka8833.EasyPaсketTCP.PacketInputStream;
-import com.Jeka8833.EasyPaсketTCP.PacketOutputStream;
-import com.Jeka8833.EasyPaсketTCP.client.Client;
-import com.Jeka8833.EasyPaсketTCP.server.ServerUser;
+import com.Jeka8833.EasyPacketTCP.Packet;
+import com.Jeka8833.EasyPacketTCP.PacketInputStream;
+import com.Jeka8833.EasyPacketTCP.PacketOutputStream;
+import com.Jeka8833.EasyPacketTCP.client.Client;
+import com.Jeka8833.EasyPacketTCP.server.ServerUser;
 
 import java.io.IOException;
 

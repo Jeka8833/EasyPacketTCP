@@ -1,8 +1,9 @@
-package com.Jeka8833.EasyPaсketTCP.server;
+package com.Jeka8833.EasyPacketTCP.server;
 
-import com.Jeka8833.EasyPaсketTCP.*;
-import com.Jeka8833.EasyPaсketTCP.listener.ReceiveObjectListener;
-import com.Jeka8833.EasyPaсketTCP.listener.ReceivePacketListener;
+import com.Jeka8833.EasyPacketTCP.*;
+import com.Jeka8833.EasyPacketTCP.listener.ReceiveObjectListener;
+import com.Jeka8833.EasyPacketTCP.listener.ReceivePacketListener;
+import com.Jeka8833.EasyPacketTCP.listener.ServerUserDisconnectListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -57,6 +58,8 @@ public class ServerUser extends Thread implements User {
         } catch (Exception e) {
             log.debug("Client crash", e);
         } finally {
+            for (ServerUserDisconnectListener listener : server.disconnectListeners)
+                listener.userDisconnect(this);
             close();
         }
     }

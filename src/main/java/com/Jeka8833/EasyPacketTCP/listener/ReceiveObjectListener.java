@@ -1,4 +1,4 @@
-package com.Jeka8833.EasyPaсketTCP.listener;
+package com.Jeka8833.EasyPacketTCP.listener;
 
 import java.io.Serializable;
 

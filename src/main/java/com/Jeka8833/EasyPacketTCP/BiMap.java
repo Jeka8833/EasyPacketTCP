@@ -1,4 +1,4 @@
-package com.Jeka8833.EasyPaсketTCP;
+package com.Jeka8833.EasyPacketTCP;
 
 import java.util.HashMap;
 import java.util.Map;

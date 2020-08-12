@@ -1,8 +1,9 @@
-package com.Jeka8833.EasyPaсketTCP.client;
+package com.Jeka8833.EasyPacketTCP.client;
 
-import com.Jeka8833.EasyPaсketTCP.*;
-import com.Jeka8833.EasyPaсketTCP.listener.ReceiveObjectListener;
-import com.Jeka8833.EasyPaсketTCP.listener.ReceivePacketListener;
+import com.Jeka8833.EasyPacketTCP.*;
+import com.Jeka8833.EasyPacketTCP.listener.ClientDisconnectListener;
+import com.Jeka8833.EasyPacketTCP.listener.ReceiveObjectListener;
+import com.Jeka8833.EasyPacketTCP.listener.ReceivePacketListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,6 +23,7 @@ public class Client extends Thread implements User {
 
     public final List<ReceiveObjectListener> objectListeners = new ArrayList<>();
     public final List<ReceivePacketListener> packetListeners = new ArrayList<>();
+    public final List<ClientDisconnectListener> disconnectListeners = new ArrayList<>();
 
     public Client(final int port) throws IOException {
         this("localhost", port);
@@ -59,6 +61,8 @@ public class Client extends Thread implements User {
         } catch (Exception ignored) {
 
         } finally {
+            for (ClientDisconnectListener listener : disconnectListeners)
+                listener.clientDisconnect(this);
             close();
         }
     }

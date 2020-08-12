@@ -1,8 +1,8 @@
 package com.Jeka8833.EasyPacketTCP.example;
 
-import com.Jeka8833.EasyPaсketTCP.PacketSettings;
-import com.Jeka8833.EasyPaсketTCP.client.Client;
-import com.Jeka8833.EasyPaсketTCP.server.Server;
+import com.Jeka8833.EasyPacketTCP.PacketSettings;
+import com.Jeka8833.EasyPacketTCP.client.Client;
+import com.Jeka8833.EasyPacketTCP.server.Server;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

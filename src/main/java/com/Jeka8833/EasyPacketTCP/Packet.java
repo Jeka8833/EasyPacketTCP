@@ -1,7 +1,7 @@
-package com.Jeka8833.EasyPaсketTCP;
+package com.Jeka8833.EasyPacketTCP;
 
-import com.Jeka8833.EasyPaсketTCP.client.Client;
-import com.Jeka8833.EasyPaсketTCP.server.ServerUser;
+import com.Jeka8833.EasyPacketTCP.client.Client;
+import com.Jeka8833.EasyPacketTCP.server.ServerUser;
 
 import java.io.IOException;
 

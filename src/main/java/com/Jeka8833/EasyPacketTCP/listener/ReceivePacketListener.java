@@ -1,6 +1,6 @@
-package com.Jeka8833.EasyPaсketTCP.listener;
+package com.Jeka8833.EasyPacketTCP.listener;
 
-import com.Jeka8833.EasyPaсketTCP.Packet;
+import com.Jeka8833.EasyPacketTCP.Packet;
 
 public interface ReceivePacketListener {
 
