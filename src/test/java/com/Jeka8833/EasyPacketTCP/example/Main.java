@@ -1,6 +1,6 @@
 package com.Jeka8833.EasyPacketTCP.example;
 
-import com.Jeka8833.EasyPacketTCP.PacketSettings;
+import com.Jeka8833.EasyPacketTCP.Packet;
 import com.Jeka8833.EasyPacketTCP.client.Client;
 import com.Jeka8833.EasyPacketTCP.server.Server;
 import org.apache.logging.log4j.LogManager;
@@ -21,9 +21,9 @@ public class Main {
         log.info("1. Server");
         log.info("2. Client");
 
-        PacketSettings.addPacket((short) 1, PINGServerPacket.class);
-        PacketSettings.addPacket((short) 2, PINGClientPacket.class);
-        PacketSettings.addPacket((short) 3, SendMessagePacket.class);
+        Packet.addPacket((short) 1, PINGServerPacket.class);
+        Packet.addPacket((short) 2, PINGClientPacket.class);
+        Packet.addPacket((short) 3, SendMessagePacket.class);
 
         try {
             final int select = scanner.nextInt();

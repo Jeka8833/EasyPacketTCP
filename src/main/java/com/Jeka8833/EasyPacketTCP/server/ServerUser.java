@@ -37,23 +37,18 @@ public class ServerUser extends Thread implements User {
         try {
             while (true) {
                 final short signature = inputStream.readShort();
-                try {
-                    if (signature == 0) {
-                        final Serializable object = (Serializable) inputStream.readObject();
-                        for (ReceiveObjectListener listener : objectListeners)
-                            listener.receiveObject(object);
-                    } else if (PacketSettings.packets.containsKey(signature)) {
-                        final Packet packet = PacketSettings.packets.get(signature).newInstance();
-                        packet.read(inputStream);
-                        for (ReceivePacketListener listener : packetListeners)
-                            listener.receivePacket(packet);
-                        packet.processByServer(this);
-                    }
-                    inputStream.skipBytes(PacketSettings.stopBytes.length);
-                } catch (IllegalAccessException | InstantiationException | IOException ex) {
-                    log.debug("Fail read packet", ex);
-                    inputStream.searchEnd();
+                if (signature == 0) {
+                    final Serializable object = (Serializable) inputStream.readObject();
+                    for (ReceiveObjectListener listener : objectListeners)
+                        listener.receiveObject(object);
+                } else if (Packet.packets.containsKey(signature)) {
+                    final Packet packet = Packet.packets.get(signature).newInstance();
+                    packet.read(inputStream);
+                    for (ReceivePacketListener listener : packetListeners)
+                        listener.receivePacket(packet);
+                    packet.processByServer(this);
                 }
+
             }
         } catch (Exception e) {
             log.debug("Client crash", e);

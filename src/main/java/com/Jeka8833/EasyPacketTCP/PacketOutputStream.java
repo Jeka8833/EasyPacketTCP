@@ -79,7 +79,6 @@ public class PacketOutputStream extends DataOutputStream {
 
             temp.writeShort(0);
             temp.writeObject(object);
-            temp.write(PacketSettings.stopBytes);
 
             write(byteArrayOutputStream.toByteArray());
         } catch (IOException ex) {
@@ -91,9 +90,8 @@ public class PacketOutputStream extends DataOutputStream {
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
              PacketOutputStream temp = new PacketOutputStream(byteArrayOutputStream)) {
 
-            temp.writeShort(PacketSettings.packets.getKey(packet.getClass()));
+            temp.writeShort(Packet.packets.getKey(packet.getClass()));
             packet.write(temp);
-            temp.write(PacketSettings.stopBytes);
 
             write(byteArrayOutputStream.toByteArray());
         } catch (IOException ex) {
