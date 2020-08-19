@@ -5,6 +5,9 @@ plugins {
     id 'maven-publish'
 }
 
+version getNewVersion()
+group gradle.mavenGroup
+
 java {
     withJavadocJar()
     withSourcesJar()
@@ -32,21 +35,16 @@ ext.sharedManifest = manifest {
 }
 
 jar {
-    manifest = project.manifest {
-        from sharedManifest
-    }
+    manifest = sharedManifest
 }
 
 task fatJar(type: Jar) {
-    manifest = project.manifest {
-        from sharedManifest
-    }
+    manifest = sharedManifest
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }
 
 publishing {
-    group gradle.mavenGroup
     repositories {
         maven {
             name = project.name
@@ -65,7 +63,6 @@ publishing {
 }
 
 build {
-    version getNewVersion()
     if (gradle.createVersionFile)
         createVersionFile()
 }
