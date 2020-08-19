@@ -6,7 +6,8 @@ dist: trusty
 
 before_deploy:
   - ./gradlew clean
-  - ./gradlew jar
+  - ./gradlew jar -Pgpr.tag=$TRAVIS_TAG
+  - ./gradlew publish -Pgpr.user=$GITHUB_USERNAME -Pgpr.key=$GITHUB_TOKEN_EPTCP -Pgpr.tag=$TRAVIS_TAG
 
 deploy:
   provider: releases

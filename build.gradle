@@ -1,5 +1,13 @@
+import groovy.json.JsonSlurper
+
 plugins {
     id 'java-library'
+    id 'maven-publish'
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
 }
 
 repositories {
@@ -10,4 +18,98 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     api group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.8'
     api group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.8'
+}
+
+ext.sharedManifest = manifest {
+    if (gradle.mainClassEnable) {
+        attributes 'Implementation-Title': project.name,
+                'Implementation-Version': project.version,
+                'Main-Class': gradle.mainClass
+    } else {
+        attributes 'Implementation-Title': project.name,
+                'Implementation-Version': project.version
+    }
+}
+
+jar {
+    manifest = project.manifest {
+        from sharedManifest
+    }
+}
+
+task fatJar(type: Jar) {
+    manifest = project.manifest {
+        from sharedManifest
+    }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+publishing {
+    group gradle.mavenGroup
+    repositories {
+        maven {
+            name = project.name
+            url = 'https://maven.pkg.github.com/' + gradle.gitUser + '/' + gradle.gitProjectName
+            credentials {
+                username = project.findProperty("gpr.user")
+                password = project.findProperty("gpr.key")
+            }
+        }
+    }
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}
+
+build {
+    version getNewVersion()
+    if (gradle.createVersionFile)
+        createVersionFile()
+}
+
+String getNewVersion() {
+    def tag = project.findProperty("gpr.tag")
+    if (tag != null && !tag.isEmpty())
+        return tag
+    if (!gradle.autoVersion)
+        return gradle.version
+    try {
+        def version = new JsonSlurper().parseText(new URL('https://api.github.com/repos/'
+                + gradle.gitUser + '/' + gradle.gitProjectName + '/releases/latest').openStream().text).tag_name
+        new File('lastversion').text = version
+        return version
+    } catch (Exception ignored) {
+        println("WARN: Fail connect to github")
+        def file = new File('lastversion')
+        if (file.exists()) {
+            def text = file.text
+            return text.isEmpty() ? gradle.version : text
+        }
+        return gradle.version
+    }
+}
+
+void createVersionFile() {
+    def lastDot = gradle.versionFilePath.lastIndexOf('.')
+    if (lastDot != -1) {
+        def className = gradle.versionFilePath.substring(lastDot + 1)
+        def packagePath = gradle.versionFilePath.substring(0, lastDot)
+        new File(projectDir, "/src/main/java/" + gradle.versionFilePath.replace('.', '/') + ".java")
+                .text = """package $packagePath;
+
+public class $className {
+
+    /**
+    *This is a fully auto generated method, please don't touch it.
+    */
+    public static String getVersion() {
+        return "$project.version";
+    }
+}"""
+    } else {
+        println("WARN: Unable to create file in root folder")
+    }
 }
