@@ -2,11 +2,9 @@ import groovy.json.JsonSlurper
 
 plugins {
     id 'java-library'
-    id 'maven-publish'
 }
 
 version getNewVersion()
-group gradle.mavenGroup
 
 java {
     withJavadocJar()
@@ -42,24 +40,6 @@ task fatJar(type: Jar) {
     manifest = sharedManifest
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
-}
-
-publishing {
-    repositories {
-        maven {
-            name = project.name
-            url = 'https://maven.pkg.github.com/' + gradle.gitUser + '/' + gradle.gitProjectName
-            credentials {
-                username = project.findProperty("gpr.user")
-                password = project.findProperty("gpr.key")
-            }
-        }
-    }
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-        }
-    }
 }
 
 build {

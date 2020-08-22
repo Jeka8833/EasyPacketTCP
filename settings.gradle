@@ -3,8 +3,6 @@ rootProject.name = 'EasyPacketTCP'
 gradle.ext.gitUser = 'Jeka8833'
 gradle.ext.gitProjectName = 'EasyPacketTCP'
 
-gradle.ext.mavenGroup = 'com.Jeka8833'
-
 gradle.ext.version = '1.0.1'
 gradle.ext.autoVersion = true
 
