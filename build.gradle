@@ -43,8 +43,7 @@ task fatJar(type: Jar) {
 }
 
 build {
-    if (gradle.createVersionFile)
-        createVersionFile()
+    if (gradle.createVersionFile) createVersionFile()
 }
 
 String getNewVersion() {
