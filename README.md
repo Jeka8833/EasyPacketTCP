@@ -14,7 +14,7 @@ repositories {
 - Step 2:
 ```gradle
 dependencies {
-    implementation 'com.github.Jeka8833:EasyPacketTCP:1.0.1'
+    implementation 'com.github.Jeka8833:EasyPacketTCP:1.0.2'
 }
 ```
 ### Maven:
@@ -32,7 +32,7 @@ dependencies {
 <dependency>
     <groupId>com.github.Jeka8833</groupId>
     <artifactId>EasyPacketTCP</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 </dependency>
 ```
 Download last release [jar](https://github.com/Jeka8833/EasyPacketTCP/releases)
