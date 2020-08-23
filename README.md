@@ -4,7 +4,6 @@ Helper library for fast packet dispatch
 [![Build Status](https://travis-ci.org/Jeka8833/EasyPacketTCP.svg?branch=master)](https://travis-ci.org/Jeka8833/EasyPacketTCP) [![](https://jitpack.io/v/Jeka8833/EasyPacketTCP.svg)](https://jitpack.io/#Jeka8833/EasyPacketTCP)
 
 ## Download
-At the moment, installation requires an additional library called [log4j](https://logging.apache.org/log4j/2.x/)
 ### Gradle:
 - Step 1:
 ```gradle
