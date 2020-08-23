@@ -37,6 +37,10 @@ public class PINGServerPacket implements Packet {
 
     @Override
     public void processByClient(Client sender) {
-        sender.sendPacket(new PINGServerPacket(time));
+        try {
+            sender.sendPacket(new PINGServerPacket(time));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

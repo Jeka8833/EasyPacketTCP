@@ -1,14 +1,9 @@
 package com.Jeka8833.EasyPacketTCP;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.*;
 import java.util.List;
 
 public class PacketOutputStream extends DataOutputStream {
-
-    private static final Logger log = LogManager.getLogger(PacketOutputStream.class);
 
     public PacketOutputStream(final OutputStream out) {
         super(out);
@@ -73,7 +68,7 @@ public class PacketOutputStream extends DataOutputStream {
         }
     }
 
-    public void sendObject(Serializable object) {
+    public void sendObject(Serializable object) throws IOException {
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
              PacketOutputStream temp = new PacketOutputStream(byteArrayOutputStream)) {
 
@@ -81,12 +76,10 @@ public class PacketOutputStream extends DataOutputStream {
             temp.writeObject(object);
 
             write(byteArrayOutputStream.toByteArray());
-        } catch (IOException ex) {
-            log.warn("Fail send Object", ex);
         }
     }
 
-    public void sendPacket(Packet packet) {
+    public void sendPacket(Packet packet) throws IOException {
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
              PacketOutputStream temp = new PacketOutputStream(byteArrayOutputStream)) {
 
@@ -94,8 +87,6 @@ public class PacketOutputStream extends DataOutputStream {
             packet.write(temp);
 
             write(byteArrayOutputStream.toByteArray());
-        } catch (IOException ex) {
-            log.warn("Fail send Packet", ex);
         }
     }
 }

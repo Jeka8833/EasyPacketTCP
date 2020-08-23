@@ -3,8 +3,6 @@ package com.Jeka8833.EasyPacketTCP.example;
 import com.Jeka8833.EasyPacketTCP.Packet;
 import com.Jeka8833.EasyPacketTCP.client.Client;
 import com.Jeka8833.EasyPacketTCP.server.Server;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -13,13 +11,11 @@ import java.util.TimerTask;
 
 public class Main {
 
-    private static final Logger log = LogManager.getLogger(Main.class);
-
     public static void main(String[] args) {
         final Scanner scanner = new Scanner(System.in);
-        log.info("Please choose what you want to run:");
-        log.info("1. Server");
-        log.info("2. Client");
+        System.out.println("Please choose what you want to run:");
+        System.out.println("1. Server");
+        System.out.println("2. Client");
 
         Packet.addPacket((short) 1, PINGServerPacket.class);
         Packet.addPacket((short) 2, PINGClientPacket.class);
@@ -33,20 +29,22 @@ public class Main {
             if (select == 1) {
                 try {
                     startServer(scanner);
-                    log.info("Server successfully started");
+                    System.out.println("Server successfully started");
                 } catch (Exception ex) {
-                    log.fatal("Fail run server", ex);
+                    System.err.println("Fail run server");
+                    ex.printStackTrace();
                 }
             } else {
                 try {
                     startClient(scanner);
-                    log.info("Client connect");
+                    System.out.println("Client connect");
                 } catch (Exception ex) {
-                    log.fatal("Fail connect to the server", ex);
+                    System.err.println("Fail connect to the server");
+                    ex.printStackTrace();
                 }
             }
         } catch (Exception ex) {
-            log.fatal("Invalid input");
+            System.err.println("Invalid input");
         }
     }
 
@@ -55,12 +53,16 @@ public class Main {
         server.start();
 
         server.joinListeners.add((user) -> {
-            log.info("New user connect > " + user.getSocket().getInetAddress());
+            System.out.println("New user connect > " + user.getSocket().getInetAddress());
 
             new Timer().scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
-                    user.sendPacket(new PINGServerPacket());
+                    try {
+                        user.sendPacket(new PINGServerPacket());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }, 0, 10000);
 
@@ -69,7 +71,11 @@ public class Main {
                     final String text = scanner.next();
                     if (text.equalsIgnoreCase("exit"))
                         System.exit(0);
-                    user.sendPacket(new SendMessagePacket(text));
+                    try {
+                        user.sendPacket(new SendMessagePacket(text));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }).start();
         });
@@ -82,7 +88,11 @@ public class Main {
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                client.sendPacket(new PINGClientPacket());
+                try {
+                    client.sendPacket(new PINGClientPacket());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }, 0, 10000);
 

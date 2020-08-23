@@ -4,8 +4,6 @@ import com.Jeka8833.EasyPacketTCP.*;
 import com.Jeka8833.EasyPacketTCP.listener.ClientDisconnectListener;
 import com.Jeka8833.EasyPacketTCP.listener.ReceiveObjectListener;
 import com.Jeka8833.EasyPacketTCP.listener.ReceivePacketListener;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -14,8 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Client extends Thread implements User {
-
-    private static final Logger log = LogManager.getLogger(Client.class);
 
     private final Socket socket;
     private final PacketInputStream inputStream;
@@ -57,19 +53,18 @@ public class Client extends Thread implements User {
         } finally {
             for (ClientDisconnectListener listener : disconnectListeners)
                 listener.clientDisconnect(this);
-            close();
+            try {
+                close();
+            } catch (IOException ignored) {
+            }
         }
     }
 
     @Override
-    public void close() {
-        try {
-            socket.close();
-            inputStream.close();
-            outputStream.close();
-        } catch (IOException ex) {
-            log.warn("Fail disconnect client", ex);
-        }
+    public void close() throws IOException {
+        socket.close();
+        inputStream.close();
+        outputStream.close();
     }
 
     @Override
@@ -88,14 +83,14 @@ public class Client extends Thread implements User {
     }
 
     @Override
-    public void sendObject(Serializable object) {
+    public void sendObject(Serializable object) throws IOException {
         if (socket.isClosed()) return;
         if (object == null) throw new NullPointerException("Sending can not be Null");
         outputStream.sendObject(object);
     }
 
     @Override
-    public void sendPacket(Packet packet) {
+    public void sendPacket(Packet packet) throws IOException {
         if (socket.isClosed()) return;
         if (packet == null) throw new NullPointerException("Sending can not be Null");
         outputStream.sendPacket(packet);

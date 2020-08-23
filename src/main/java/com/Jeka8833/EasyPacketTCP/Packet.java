@@ -14,7 +14,7 @@ public interface Packet {
 
     void processByClient(final Client sender);
 
-     BiMap<Short, Class<? extends Packet>> packets = new BiMap<>();
+    BiMap<Short, Class<? extends Packet>> packets = new BiMap<>();
 
     static void addPacket(final short signature, final Class<? extends Packet> aClass) {
         if (packets.containsKey(signature))

@@ -2,18 +2,15 @@ package com.Jeka8833.EasyPacketTCP.server;
 
 import com.Jeka8833.EasyPacketTCP.listener.ServerUserDisconnectListener;
 import com.Jeka8833.EasyPacketTCP.listener.ServerUserJoinListener;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Server extends Thread {
-
-    private static final Logger log = LogManager.getLogger(Server.class);
+public class Server extends Thread implements Closeable {
 
     public final List<ServerUser> users = new ArrayList<>();
     public final List<ServerUserJoinListener> joinListeners = new ArrayList<>();
@@ -47,24 +44,24 @@ public class Server extends Thread {
                 }
             }
         } finally {
-            close();
+            try {
+                close();
+            } catch (IOException ignored) {
+            }
         }
     }
 
-    public void close() {
-        try {
-            for (ServerUser user : users) {
-                try {
-                    user.getSocket().close();
-                    user.getInputStream().close();
-                    user.getOutputStream().close();
-                } catch (IOException ignored) {
-                }
+    @Override
+    public void close() throws IOException {
+        for (ServerUser user : users) {
+            try {
+                user.getSocket().close();
+                user.getInputStream().close();
+                user.getOutputStream().close();
+            } catch (IOException ignored) {
             }
-            users.clear();
-            serverSocket.close();
-        } catch (IOException ex) {
-            log.warn("Fail close this server", ex);
         }
+        users.clear();
+        serverSocket.close();
     }
 }

@@ -32,7 +32,11 @@ public class PINGClientPacket implements Packet {
 
     @Override
     public void processByServer(ServerUser sender) {
-        sender.sendPacket(new PINGClientPacket(time));
+        try {
+            sender.sendPacket(new PINGClientPacket(time));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
